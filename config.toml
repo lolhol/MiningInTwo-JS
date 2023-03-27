@@ -1,0 +1,50 @@
+
+[tp-settings]
+	re-teleport = false
+	re-tp_amount_of_times = 2
+	smoothlook = 109
+	ping_mode = 98
+	aotv_teleport_time = 95
+	aotv_wait_time = 650
+	"look_time_(in_ms)" = 150
+
+[main]
+	top-to-bottom = true
+	beplace_block_command = "replaceBlock"
+	"replace_block_command_(after_editing_do_/ct_load)" = "replaceBlock"
+	block_on_route_esp = true
+	clear_command = "clear"
+	render_pathbreak_helper = false
+	linesqol = true
+	aotv_teleport_time = 504
+	wait_on_first_point = false
+	"clear_command_(after_editing_do_/ct_load)" = "clear"
+	menu_keybind = true
+	structure_finder = false
+	add_block_to_list_keybind = true
+	smoothlook = 5
+	rotation_angle = 210
+	wait_on_first_point_wait_time = 11154
+	macro_spot = 1
+
+[helper-mode]
+	turn_on_helper = true
+
+[fail-safes]
+	player_failsafe = false
+	player_esp_distance_ = 500
+	player_esp = false
+	distance = 50
+	actually_switch_to_aotv = false
+
+[fun]
+	block_esp_color_blue = 0
+	render_block-to-block_lines = false
+	actually_switch_to_aotv = true
+	block_esp_color_green = 0
+	"turn_on/off" = false
+	block_esp_color_red = 10
+
+[structure-finder]
+	structure_finder = false
+
