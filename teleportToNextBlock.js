@@ -6,6 +6,7 @@ import { getBlockCoordsAtPlayer, getBlockCoords } from "./utils/blockCoords";
 import Settings from "./data/config/config";
 import { getAOTVSlot, getRodSlot, getDrillSlot } from "./functions/getInvItems";
 import { throwRod } from "./functions/throwRod";
+import { adjustLook } from "./functions/adjustLook";
 export const mc = Client.getMinecraft();
 export const EnumFacing = Java.type("net.minecraft.util.EnumFacing");
 export const RightClick = new KeyBind(mc.field_71474_y.field_74313_G);
@@ -76,16 +77,32 @@ function lookAtNextBlockSlow() {
       Player.setHeldItemIndex(getAOTVSlot());
     }
 
-    lookAtBlockTP(
+    /*lookAtBlockTP(
       blockCords.x,
       blockCords.y - 1,
       blockCords.z,
       Settings.smoothLook
+    );*/
+
+    let block = adjustLook(
+      World.getBlockAt(blockCords.x, blockCords.y - 1, blockCords.z)
     );
 
-    Thread.sleep(Settings.smoothLook + Settings.AOTVdelay);
+    if (block) {
+      lookAtBlockTP(
+        block.getX(),
+        block.getY(),
+        block.getZ(),
+        Settings.smoothLook
+      );
 
-    nextBlock();
+      Thread.sleep(Settings.smoothLook + Settings.AOTVdelay);
+
+      nextBlock();
+    } else {
+      ChatLib.chat("Found no tp able locations.");
+      setState(null);
+    }
   }).start();
 }
 

@@ -1,3 +1,7 @@
 export function isSameBlock(a, b) {
-  return a.getX() == b.getX() && a.getY() == b.getY() && a.getZ() == b.getZ();
+  return (
+    Math.abs(a.getX() - b.getX()) < 0.0001 &&
+    Math.abs(a.getY() - b.getY()) < 0.0001 &&
+    Math.abs(a.getZ() - b.getZ()) < 0.0001
+  );
 }

@@ -131,16 +131,24 @@ function onStateSpinDrive() {
       breakBlockCounter++;
     }
 
-    if (breakBlockCounter == 100) {
+    if (breakBlockCounter == 60) {
+      new Thread(() => {
+        JUMP.setState(true);
+        Thread.sleep(10);
+        JUMP.setState(false);
+      }).start();
+    } else if (breakBlockCounter == 200) {
+      ChatLib.chat("Could not break gemstone LLL");
+      setState(null);
     }
-
-    //---
 
     if (
       World.getBlockAt(Player.getX(), Player.getY() - 2, Player.getZ())
         .toString()
         .includes("stained_glass")
     ) {
+      //---
+
       lookAtSlowly(x + 0.25, block.getY() - 13, z + 0.25);
     } else {
       if (lookUnder) {

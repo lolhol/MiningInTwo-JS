@@ -58,7 +58,8 @@ export function adjustLook(destBlock) {
       ];
       point[i] = Math.floor(collision.output[i] + d) + (d == 0 ? -0.05 : 0.05);
 
-      addPoint(point[0], point[1], point[2]);
+      //addPoint(point[0], point[1], point[2]);
+      //renderToolPoint(point[0], point[1], point[2]);
 
       let collisionPoint = getCollisionBlock(
         Player.getX(),
@@ -67,7 +68,7 @@ export function adjustLook(destBlock) {
         point[0],
         point[1],
         point[2],
-        playerDestBlockCenter * 20
+        playerDestBlockCenter
       );
 
       if (isSameBlock(collisionPoint.block, destBlock)) {
