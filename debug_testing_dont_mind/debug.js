@@ -45,6 +45,10 @@ export function resetBlocks() {
   blocks = [];
 }
 
+export function resetLines() {
+  lines = [];
+}
+
 export function renderToolLine(x1, y1, z1, x2, y2, z2) {
   la = [x1, y1, z1];
   lb = [x2, y2, z2];

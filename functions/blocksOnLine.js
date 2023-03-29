@@ -5,7 +5,7 @@ import {
   renderToolPoint,
   resetBlocks,
 } from "../debug_testing_dont_mind/debug";
-import { getDist } from "./getDist";
+import { getDistance } from "./getDistance";
 import { intersection } from "./rayAABB";
 
 export function getCollisionBlock(x1, y1, z1, x2, y2, z2, maxDist) {
@@ -56,7 +56,7 @@ export function getCollisionBlock(x1, y1, z1, x2, y2, z2, maxDist) {
           }
 
           if (
-            getDist(ro, [
+            getDistance(ro, [
               block.getX() + 0.5,
               block.getY() + 0.5,
               block.getZ() + 0.5,
@@ -76,7 +76,8 @@ export function getCollisionBlock(x1, y1, z1, x2, y2, z2, maxDist) {
   }
 
   collidingBlocks.sort((a, b) => {
-    return getDist([x1, y1, z1], a.output) < getDist([x1, y1, z1], b.output)
+    return getDistance([x1, y1, z1], a.output) <
+      getDistance([x1, y1, z1], b.output)
       ? -1
       : 1;
   });

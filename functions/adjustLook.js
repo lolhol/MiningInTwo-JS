@@ -5,16 +5,17 @@ import {
   renderToolLine,
   renderToolPoint,
   addBlock,
+  resetLines,
 } from "../debug_testing_dont_mind/debug";
 import { getCollisionBlock } from "./blocksOnLine";
-import { getDist } from "./getDist";
+import { getCylinderBaseVec } from "./getCylinderBaseVec";
+import { getDistance as getDistance } from "./getDistance";
 import { getHeadY } from "./getHeadY";
 import { isSameBlock } from "./isSameBlock";
-import { lookAtSlowly } from "./lookAtSlowly";
-import { intersection } from "./rayAABB";
 
 export function adjustLook(destBlock) {
   let playerHeight = getHeadY();
+  //renderToolPoint(Player.getX(), Player.getY() + playerHeight, Player.getZ());
 
   let destBlockCenter = [
     destBlock.getX() + 0.5,
@@ -22,7 +23,7 @@ export function adjustLook(destBlock) {
     destBlock.getZ() + 0.5,
   ];
 
-  let playerDestBlockCenter = getDist(
+  let distToBlockCenter = getDistance(
     [Player.getX(), Player.getY() + playerHeight, Player.getZ()],
     [destBlockCenter[0], destBlockCenter[1], destBlockCenter[2]]
   );
@@ -34,32 +35,31 @@ export function adjustLook(destBlock) {
     destBlockCenter[0],
     destBlockCenter[1],
     destBlockCenter[2],
-    playerDestBlockCenter
+    distToBlockCenter
   );
 
   if (!collision) {
     return null;
   }
 
-  if (
-    Math.abs(collision.block.getX() - destBlock.getX()) < 0.0001 &&
-    Math.abs(collision.block.getZ() - destBlock.getZ()) < 0.0001 &&
-    Math.abs(collision.block.getY() - destBlock.getY()) < 0.0001
-  ) {
-    return destBlockCenter;
-  }
+  let radiusStep = 0.1;
+  let radiusMax = Math.sqrt(3) / 2 + radiusStep;
 
-  for (let i = 0; i < 3; i++) {
-    for (let d = 0; d < 2; d++) {
+  for (let radius = radiusStep; radius < radiusMax; radius += radiusStep) {
+    let angleStep = (radiusMax / radius) * 5;
+    for (let angle = 0; angle < 360 + angleStep; angle += angleStep) {
+      let vec = getCylinderBaseVec(
+        [Player.getX(), Player.getY() + playerHeight, Player.getZ()],
+        destBlockCenter,
+        angle,
+        radius
+      );
+
       let point = [
-        collision.output[0],
-        collision.output[1],
-        collision.output[2],
+        destBlockCenter[0] + vec[0],
+        destBlockCenter[1] + vec[1],
+        destBlockCenter[2] + vec[2],
       ];
-      point[i] = Math.floor(collision.output[i] + d) + (d == 0 ? -0.05 : 0.05);
-
-      //addPoint(point[0], point[1], point[2]);
-      //renderToolPoint(point[0], point[1], point[2]);
 
       let collisionPoint = getCollisionBlock(
         Player.getX(),
@@ -68,12 +68,16 @@ export function adjustLook(destBlock) {
         point[0],
         point[1],
         point[2],
-        playerDestBlockCenter
+        distToBlockCenter + Math.sqrt(3) / 2
       );
 
       if (isSameBlock(collisionPoint.block, destBlock)) {
         return point;
       }
+
+      //addPoint(point[0], point[1], point[2]);
     }
   }
+
+  return null;
 }

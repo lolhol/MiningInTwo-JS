@@ -3,5 +3,5 @@ export function getHeadY() {
     return 1.54;
   }
 
-  return 2;
+  return 1.62;
 }
