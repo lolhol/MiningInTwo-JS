@@ -1,9 +1,7 @@
 /** @format */
 
-import { addBlockRoute } from "../utils/blockCoords";
-import { setState } from "./state";
-import { radiansToDegree } from "./radiansToDegree";
-import Settings from "../data/config/config";
+import { setState } from "../Other/state";
+import Settings from "../../data/config/config";
 
 export function getNearestBlocks() {
   let radius = 1;

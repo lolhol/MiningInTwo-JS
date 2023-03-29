@@ -1,10 +1,3 @@
-import {
-  addBlock,
-  addLine,
-  renderToolBlock,
-  renderToolPoint,
-  resetBlocks,
-} from "../debug_testing_dont_mind/debug";
 import { getDistance } from "./getDistance";
 import { intersection } from "./rayAABB";
 

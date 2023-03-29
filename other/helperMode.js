@@ -1,16 +1,16 @@
 /** @format */
 
-import { setState } from "../functions/state";
-import { lookAtSlowly } from "../functions/lookAtSlowly";
-import { degreeToRadians } from "../functions/degreeToRadians";
-import { throwRod } from "../functions/throwRod";
-import { getNearestBlocks } from "../functions/getNearestBlocks";
+import { setState } from "../functions/Other/state";
+import { lookAtSlowly } from "../functions/Looks/lookAtSlowly";
+import { degreeToRadians } from "../functions/MathUtils/degreeToRadians";
+import { throwRod } from "../functions/Items/throwRod";
+import { getNearestBlocks } from "../functions/Blocks/getNearestBlocks";
 import Settings from "../data/config/config";
 import {
   renderToolBlock,
   renderToolAngle,
 } from "../debug_testing_dont_mind/debug";
-import { getAnglePlayerToBlock } from "../functions/getAnglePlayerToBlock";
+import { getAnglePlayerToBlock } from "../functions/MathUtils/getAnglePlayerToBlock";
 
 const MC = Client.getMinecraft();
 const JUMP = new KeyBind(MC.field_71474_y.field_74314_A);
@@ -78,30 +78,40 @@ export function helperSpinDrive() {
         .toString()
         .includes("stained_glass")
     ) {
-      lookAtSlowly(x + 0.25, block.getY() - 13, z + 0.25);
+      lookAtSlowly(x + 0.25, block.getY() - 13, z + 0.25, Settings.SPEED * 15);
     } else {
       if (lookUnder) {
         if (block.getY() > Player.getY()) {
           new Thread(() => {
             JUMP.setState(true);
-            lookAtSlowly(x + 0.25, block.getY() - 5, z + 0.25);
+            lookAtSlowly(
+              x + 0.25,
+              block.getY() - 5,
+              z + 0.25,
+              Settings.SPEED * 15
+            );
             Thread.sleep(10);
             JUMP.setState(false);
           }).start();
         } else {
-          lookAtSlowly(x + 0.25, block.getY() - 5, z + 0.25);
+          lookAtSlowly(
+            x + 0.25,
+            block.getY() - 5,
+            z + 0.25,
+            Settings.SPEED * 15
+          );
         }
       } else {
         if (block.getY() - 0.3 > Player.getY()) {
           new Thread(() => {
             JUMP.setState(true);
-            lookAtSlowly(x + 0.25, y, z + 0.25);
+            lookAtSlowly(x + 0.25, y, z + 0.25, Settings.SPEED * 15);
             Thread.sleep(10);
             JUMP.setState(false);
           }).start();
         }
 
-        lookAtSlowly(x + 0.25, y, z + 0.25);
+        lookAtSlowly(x + 0.25, y, z + 0.25, Settings.SPEED * 15);
       }
     }
   } else {

@@ -1,12 +1,24 @@
 /** @format */
 
-import { lookAtBlockTP } from "./functions/lookAtBlockTP";
-import { getState, getTickSinceStateChange, setState } from "./functions/state";
-import { getBlockCoordsAtPlayer, getBlockCoords } from "./utils/blockCoords";
+import { lookAtBlockTP } from "./functions/Looks/lookAtBlockTP";
+import {
+  getState,
+  getTickSinceStateChange,
+  setState,
+} from "./functions/Other/state";
+import {
+  getBlockCoordsAtPlayer,
+  getBlockCoords,
+} from "./functions/Blocks/blockCoords";
 import Settings from "./data/config/config";
-import { getAOTVSlot, getRodSlot, getDrillSlot } from "./functions/getInvItems";
-import { throwRod } from "./functions/throwRod";
-import { adjustLook } from "./functions/adjustLook";
+import {
+  getAOTVSlot,
+  getRodSlot,
+  getDrillSlot,
+} from "./functions/Items/getInvItems";
+import { throwRod } from "./functions/Items/throwRod";
+import { adjustLook } from "./functions/MathUtils/adjustLook";
+import { lookAtSlowly } from "./functions/Looks/lookAtSlowly";
 export const mc = Client.getMinecraft();
 export const EnumFacing = Java.type("net.minecraft.util.EnumFacing");
 export const RightClick = new KeyBind(mc.field_71474_y.field_74313_G);
@@ -77,24 +89,15 @@ function lookAtNextBlockSlow() {
       Player.setHeldItemIndex(getAOTVSlot());
     }
 
-    /*lookAtBlockTP(
-      blockCords.x,
-      blockCords.y - 1,
-      blockCords.z,
-      Settings.smoothLook
-    );*/
-
     let block = adjustLook(
-      World.getBlockAt(blockCords.x, blockCords.y - 1, blockCords.z)
+      World.getBlockAt(blockCords.x, blockCords.y, blockCords.z)
     );
 
+    //ChatLib.chat(block[0] + " " + block[1] + "" + block[2]);
+
     if (block) {
-      lookAtBlockTP(
-        block.getX(),
-        block.getY(),
-        block.getZ(),
-        Settings.smoothLook
-      );
+      lookAtSlowly(block[0], block[1], block[2], Settings.smoothLook);
+      //lookAtBlockTP(Settings.smoothLook);
 
       Thread.sleep(Settings.smoothLook + Settings.AOTVdelay);
 

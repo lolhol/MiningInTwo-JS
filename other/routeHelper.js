@@ -3,7 +3,7 @@
 import Settings from "../data/config/config";
 
 import RenderLib from "../../RenderLib/index";
-import { getBlockCoords } from "../utils/blockCoords";
+import { getBlockCoords } from "../functions/Blocks/blockCoords";
 
 let blocks = [];
 let state = false;

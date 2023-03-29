@@ -1,5 +1,5 @@
 import RenderLib from "../../RenderLib/";
-import { degreeToRadians } from "../functions/degreeToRadians";
+import { degreeToRadians } from "../functions/MathUtils/degreeToRadians";
 
 let tx = null;
 let ty = null;

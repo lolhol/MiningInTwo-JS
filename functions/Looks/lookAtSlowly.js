@@ -1,17 +1,17 @@
 /** @format */
 
-import { radiansToDegree } from "./radiansToDegree";
+import { radiansToDegree } from "../MathUtils/radiansToDegree";
 
-import Settings from "../data/config/config";
+import Settings from "../../data/config/config";
 
 let lookSPEED;
 
-export function lookAtSlowly(x, y, z) {
+export function lookAtSlowly(x, y, z, speed) {
   canaotv = false;
   let hoekPitch;
   let hoekYaw;
   let AngleYaw;
-  let msLookVelo = 1; //Settings.SPEED * 15;
+  let msLookVelo = speed; //Settings.SPEED * 15;
 
   if (Settings.SPEED == 1) {
     msLookVelo = 2;

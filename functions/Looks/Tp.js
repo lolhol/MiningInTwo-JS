@@ -1,7 +1,6 @@
 /** @format */
 
-import { lookAtSlowly } from "../functions/lookAtSlowly";
-import { blockList } from "./setBlockCords";
+import { blockList } from "../Blocks/setBlockCords";
 
 let state = null;
 

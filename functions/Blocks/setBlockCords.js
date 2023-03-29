@@ -1,6 +1,6 @@
 /** @format */
 
-import { getState, setState } from "../functions/state";
+import { getState } from "../functions/state";
 
 let setBlockMap = new Map();
 let blockNumber = 0;

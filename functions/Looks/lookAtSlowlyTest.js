@@ -1,8 +1,8 @@
 /** @format */
 
-import { radiansToDegree } from "./radiansToDegree";
+import { radiansToDegree } from "../radiansToDegree";
 
-import Settings from "../data/config/config";
+import Settings from "../../data/config/config";
 
 let lookSPEED;
 

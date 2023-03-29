@@ -2,59 +2,33 @@
 /// <reference types="../CTAutocomplete" />
 /// <reference lib="es2015" />
 
-import RenderLib from "../RenderLib/index";
 import { renderToolBlock } from "./debug_testing_dont_mind/debug";
-import { radiansToDegree } from "./functions/radiansToDegree";
-import { lookAtSlowly } from "./functions/lookAtSlowly";
-import { lookAt } from "./functions/lookAt";
-import { degreeToRadians } from "./functions/degreeToRadians";
-import { mainBlockChecks } from "./functions/getNearestBlocks";
-import { getAnglePlayerToBlock } from "./functions/getAnglePlayerToBlock";
+import { lookAtSlowly } from "./functions/Looks/lookAtSlowly";
+import { degreeToRadians } from "./functions/MathUtils/degreeToRadians";
+import { mainBlockChecks } from "./functions/Blocks/getNearestBlocks";
+import { getAnglePlayerToBlock } from "./functions/MathUtils/getAnglePlayerToBlock";
 import "./commandKeyRegistries/keys";
-import "./utils/ESP";
+import "./functions/Other/ESP";
 import "./other/routeHelper";
-import { routeHelper } from "./other/routeHelper";
 import "./other/structureFinder";
 import "./debug_testing_dont_mind/debug";
 import "./other/renderLinesQOL";
 import "./commandKeyRegistries/commands";
-import {
-  getESPColor,
-  getESPColorRed,
-  getESPColorGreen,
-} from "./functions/getESPColor";
-import {
-  getKeyBindFromKey,
-  getKeyBindFromKeyHelper,
-} from "./functions/getKeyBindFromKey";
-import { checkBlock } from "./utils/checkLocation";
-import {
-  addBlockRoute,
-  getBlockCoords,
-  getBlockCoordsAtPlayer,
-} from "./utils/blockCoords";
-import { checkIfCobbleUnder, writeCobbleCoords } from "./utils/underGemstone";
-import "./utils/playerFailsafe";
+import "./functions/Other/playerFailsafe";
 import { teleport } from "./teleportToNextBlock";
-import { getState, setState, getTickSinceStateChange } from "./functions/state";
-//import { routeAssist } from "./functions/routeAssist";
-import { getBlockUnder } from "./functions/getNearestBlocks";
+import { getState, setState } from "./functions/Other/state";
 
 import Settings from "./data/config/config";
 
 //HelperMode
-import { helperArmadillo, helperSpinDrive } from "./other/helperMode";
-import { addBlock } from "./functions/blocks";
-import { getDrillSlot, getRodSlot } from "./functions/getInvItems";
-import { throwRod } from "./functions/throwRod";
-import { lookAtBlockTP } from "./functions/lookAtBlockTP";
-import { replaceBlockCoord } from "./utils/replaceBlock";
-import { checkBlocksAround } from "./functions/checkBlocksAround";
+import { helperSpinDrive } from "./other/helperMode";
+import { getDrillSlot, getRodSlot } from "./functions/Items/getInvItems";
+import { throwRod } from "./functions/Items/throwRod";
+import { checkBlocksAround } from "./functions/Blocks/checkBlocksAround";
 
 export const C09PacketHeldItemChange = Java.type(
   "net.minecraft.network.play.client.C09PacketHeldItemChange"
 );
-
 const MC = Client.getMinecraft();
 const JUMP = new KeyBind(MC.field_71474_y.field_74314_A);
 const RIGHTCLICK = MC.getClass().getDeclaredMethod("func_147121_ag");
@@ -149,30 +123,40 @@ function onStateSpinDrive() {
     ) {
       //---
 
-      lookAtSlowly(x + 0.25, block.getY() - 13, z + 0.25);
+      lookAtSlowly(x + 0.25, block.getY() - 13, z + 0.25, Settings.SPEED * 15);
     } else {
       if (lookUnder) {
         if (block.getY() > Player.getY()) {
           new Thread(() => {
             JUMP.setState(true);
-            lookAtSlowly(x + 0.25, block.getY() - 5, z + 0.25);
+            lookAtSlowly(
+              x + 0.25,
+              block.getY() - 5,
+              z + 0.25,
+              Settings.SPEED * 15
+            );
             Thread.sleep(10);
             JUMP.setState(false);
           }).start();
         } else {
-          lookAtSlowly(x + 0.25, block.getY() - 5, z + 0.25);
+          lookAtSlowly(
+            x + 0.25,
+            block.getY() - 5,
+            z + 0.25,
+            Settings.SPEED * 15
+          );
         }
       } else {
         if (block.getY() - 0.3 > Player.getY()) {
           new Thread(() => {
             JUMP.setState(true);
-            lookAtSlowly(x + 0.25, y, z + 0.25);
+            lookAtSlowly(x + 0.25, y, z + 0.25, Settings.SPEED * 15);
             Thread.sleep(10);
             JUMP.setState(false);
           }).start();
         }
 
-        lookAtSlowly(x + 0.25, y, z + 0.25);
+        lookAtSlowly(x + 0.25, y, z + 0.25, Settings.SPEED * 15);
       }
     }
   } else {

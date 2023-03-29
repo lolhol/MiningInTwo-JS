@@ -1,6 +1,6 @@
 import { getCobbleBlockCoords } from "./underGemstone";
 import { getBlockData, getBlockCoords, reWriteLocalData } from "./blockCoords";
-import Settings from "../data/config/config";
+import Settings from "../../data/config/config";
 
 export function replaceBlockCoord(positionInList) {
   let { rAssist } = getBlockCoords();

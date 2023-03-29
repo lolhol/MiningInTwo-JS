@@ -1,5 +1,8 @@
-import { getBlockCoords, reWriteLocalData } from "../utils/blockCoords";
-import Settings from "../data/config/config";
+import {
+  getBlockCoords,
+  reWriteLocalData,
+} from "../../functions/Blocks/blockCoords";
+import Settings from "../../data/config/config";
 
 /** @format */
 let xpos1 = [];

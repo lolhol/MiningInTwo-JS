@@ -1,17 +1,17 @@
 /** @format */
 
 import { routeHelper } from "../other/routeHelper";
-import { checkBlock } from "../utils/checkLocation";
-import { addBlockRoute } from "../utils/blockCoords";
-import { getState, setState } from "../functions/state";
+import { checkBlock } from "../functions/Blocks/checkLocation";
+import { addBlockRoute } from "../functions/Blocks/blockCoords";
+import { getState, setState } from "../functions/Other/state";
 
 import Settings from "../data/config/config";
 
 import { helperArmadillo } from "../other/helperMode";
-import { addBlock } from "../functions/blocks";
-import { getDrillSlot } from "../functions/getInvItems";
-import { throwRod } from "../functions/throwRod";
-import { checkInv } from "../functions/checkIfItemsInInv";
+import { addBlock } from "../functions/Blocks/blocks";
+import { getDrillSlot } from "../functions/Items/getInvItems";
+import { throwRod } from "../functions/Items/throwRod";
+import { checkInv } from "../functions/Items/checkIfItemsInInv";
 
 register("Tick", () => {
   if (menuKeybind.isPressed() == true) {

@@ -1,8 +1,7 @@
-import { checkentity } from "../functions/checkEnti";
-import Settings from "../data/config/config";
-import RenderLib from "../../RenderLib/index";
-import { getState, setState } from "../functions/state";
-import { lookAt } from "../functions/lookAt";
+import { checkentity } from "./checkEnti";
+import Settings from "../../data/config/config";
+import { getState, setState } from "./state";
+import { lookAt } from "../Looks/lookAt";
 
 let renderPoints = [];
 let distanceToPlayerState = null;

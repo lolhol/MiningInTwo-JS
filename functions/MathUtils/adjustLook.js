@@ -1,12 +1,3 @@
-import {
-  addLine,
-  addPoint,
-  renderToolBlock,
-  renderToolLine,
-  renderToolPoint,
-  addBlock,
-  resetLines,
-} from "../debug_testing_dont_mind/debug";
 import { getCollisionBlock } from "./blocksOnLine";
 import { getCylinderBaseVec } from "./getCylinderBaseVec";
 import { getDistance as getDistance } from "./getDistance";

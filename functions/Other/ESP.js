@@ -1,13 +1,9 @@
-import {
-  getESPColor,
-  getESPColorRed,
-  getESPColorGreen,
-} from "../functions/getESPColor";
-import { getBlockCoords } from "../utils/blockCoords";
+import { getESPColor, getESPColorRed, getESPColorGreen } from "./getESPColor";
+import { getBlockCoords } from "../Blocks/blockCoords";
 
-import { checkentity } from "../functions/checkEnti";
-import Settings from "../data/config/config";
-import RenderLib from "../../RenderLib/index";
+import { checkentity } from "./checkEnti";
+import Settings from "../../data/config/config";
+import RenderLib from "../../../RenderLib/index";
 
 let renderPoints = [];
 let render = false;

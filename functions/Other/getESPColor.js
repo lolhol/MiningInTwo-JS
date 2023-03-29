@@ -1,4 +1,4 @@
-import Settings from "../data/config/config";
+import Settings from "../../data/config/config";
 
 export function getESPColor() {
   if (Settings.ESPBlueColor == 0) {

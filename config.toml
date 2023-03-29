@@ -5,8 +5,8 @@
 	smoothlook = 109
 	ping_mode = 98
 	aotv_teleport_time = 95
-	aotv_wait_time = 650
-	"look_time_(in_ms)" = 150
+	aotv_wait_time = 50
+	"look_time_(in_ms)" = 94
 
 [main]
 	top-to-bottom = true

@@ -1,8 +1,6 @@
 /** @format */
 
-import { radiansToDegree } from "./radiansToDegree";
-import Settings from "../data/config/config";
-import { throwRod } from "./throwRod";
+import { radiansToDegree } from "../MathUtils/radiansToDegree";
 
 let canaotv = false;
 
