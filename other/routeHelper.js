@@ -140,13 +140,6 @@ export function routeHelper() {
         : -1;
     });
 
-    /*blocks.filter(
-      (a) =>
-        !a.toString().includes("air") &&
-        !a.toString().includes("cobblestone") &&
-        !a.toString().includes("stained_galss")
-    );*/
-
     block = blocks.shift();
     state = true;
     isWritten = true;

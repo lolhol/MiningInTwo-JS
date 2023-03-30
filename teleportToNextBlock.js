@@ -50,6 +50,8 @@ let checkTickCounter = 0;
 let retryCounter = 0;
 let retryState = true;
 let isOffTheDillo = false;
+let playerYBe4;
+let standingTickCounter = 0;
 
 export function teleport() {
   let blockCoords;
@@ -186,15 +188,14 @@ register("Tick", () => {
 
   if (isOffTheDillo) {
     if (checkTickCounter < 50) {
-      if (Math.abs(Player.getY() - playerYBe4) >= 0.048) {
-        playerYBe4 = playerYBe4 - 0.5;
+      if (Math.abs(Player.getY() - Math.floor(Player.getY()) < 0.0001)) {
+        standingTickCounter++;
+      } else {
+        standingTickCounter = 0;
+        SHIFT.setState(true);
       }
 
-      if (
-        (Math.abs(playerYBe4 - Player.getY()) <= 0.0001 ||
-          Math.abs(playerYBe4 - Player.getY()) >= 1.11245) &&
-        checkTickCounter == 10
-      ) {
+      if (standingTickCounter) {
         isOffTheDillo = false;
         checkTickCounter = 0;
         SHIFT.setState(true);
@@ -206,8 +207,6 @@ register("Tick", () => {
 
           lookAtNextBlockSlow();
         }).start();
-      } else {
-        SHIFT.setState(true);
       }
     } else {
       ChatLib.chat("Cant get off the dillo :/");

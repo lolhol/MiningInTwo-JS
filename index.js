@@ -121,8 +121,6 @@ function onStateSpinDrive() {
         .toString()
         .includes("stained_glass")
     ) {
-      //---
-
       lookAtSlowly(x + 0.25, block.getY() - 13, z + 0.25, Settings.SPEED * 15);
     } else {
       if (lookUnder) {
