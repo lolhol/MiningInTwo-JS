@@ -54,6 +54,7 @@ let playerYBe4;
 let standingTickCounter = 0;
 
 export function teleport() {
+  ChatLib.chat("!!!");
   let blockCoords;
 
   if (Settings.macroSpot == 1)
