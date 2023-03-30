@@ -84,7 +84,6 @@ export function teleport() {
 }
 
 function lookAtNextBlockSlow() {
-  ChatLib.chat("!");
   new Thread(() => {
     Thread.sleep(Settings.AOTVdelay);
 
