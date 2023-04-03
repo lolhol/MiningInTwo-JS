@@ -1,37 +1,19 @@
 /** @format */
 
-import { lookAtBlockTP } from "./functions/Looks/lookAtBlockTP";
-import {
-  getState,
-  getTickSinceStateChange,
-  setState,
-} from "./functions/Other/state";
+import { getState, setState } from "./functions/Other/state";
 import {
   getBlockCoordsAtPlayer,
   getBlockCoords,
 } from "./functions/Blocks/blockCoords";
 import Settings from "./data/config/config";
-import {
-  getAOTVSlot,
-  getRodSlot,
-  getDrillSlot,
-} from "./functions/Items/getInvItems";
+import { getAOTVSlot, getDrillSlot } from "./functions/Items/getInvItems";
 import { throwRod } from "./functions/Items/throwRod";
 import { adjustLook } from "./functions/MathUtils/adjustLook";
 import { lookAtSlowly } from "./functions/Looks/lookAtSlowly";
+import { setCurrentSlot } from "./functions/Other/setCurrentSlot";
+import { packetClick } from "./functions/Other/Packets/packetClick";
 export const mc = Client.getMinecraft();
-export const EnumFacing = Java.type("net.minecraft.util.EnumFacing");
 export const RightClick = new KeyBind(mc.field_71474_y.field_74313_G);
-export const C08PacketPlayerBlockPlacement = Java.type(
-  "net.minecraft.network.play.client.C08PacketPlayerBlockPlacement"
-);
-export const C0APacketAnimation = Java.type(
-  "net.minecraft.network.play.client.C0APacketAnimation"
-);
-export const C09PacketHeldItemChange = Java.type(
-  "net.minecraft.network.play.client.C09PacketHeldItemChange"
-);
-export const BP = Java.type("net.minecraft.util.BlockPos");
 export const Jump = new KeyBind(mc.field_71474_y.field_74314_A);
 export const Shift = new KeyBind(mc.field_71474_y.field_74311_E);
 export const RightClickSingle = mc
@@ -50,11 +32,9 @@ let checkTickCounter = 0;
 let retryCounter = 0;
 let retryState = true;
 let isOffTheDillo = false;
-let playerYBe4;
 let standingTickCounter = 0;
 
 export function teleport() {
-  ChatLib.chat("!!!");
   let blockCoords;
 
   if (Settings.macroSpot == 1)
@@ -67,8 +47,6 @@ export function teleport() {
     setState(null);
 
     if (blockCoords.length != 0) {
-      playerYBe4 = Player.getY();
-
       SHIFT.setState(true);
 
       if (blockCoords.length == pos + 1) {
@@ -96,11 +74,8 @@ function lookAtNextBlockSlow() {
       World.getBlockAt(blockCords.x, blockCords.y, blockCords.z)
     );
 
-    //ChatLib.chat(block[0] + " " + block[1] + "" + block[2]);
-
     if (block) {
       lookAtSlowly(block[0], block[1], block[2], Settings.smoothLook);
-      //lookAtBlockTP(Settings.smoothLook);
 
       Thread.sleep(Settings.smoothLook + Settings.AOTVdelay);
 
@@ -117,27 +92,12 @@ export function nextBlock() {
     let currentSlot = Player.getHeldItemIndex();
 
     if (!Settings.switchToAOTV) {
-      mc.field_71439_g.field_71174_a.func_147297_a(
-        new C09PacketHeldItemChange(getAOTVSlot())
-      );
+      setCurrentSlot(getAOTVSlot(), 0);
     }
 
-    mc.field_71439_g.field_71174_a.func_147297_a(
-      new C08PacketPlayerBlockPlacement(
-        new BP(-1, -1, -1),
-        255,
-        Player.getInventory().getStackInSlot(getAOTVSlot()).getItemStack(),
-        0,
-        0,
-        0
-      )
-    );
+    packetClick(getAOTVSlot());
 
-    Thread.sleep(Settings.ping);
-
-    mc.field_71439_g.field_71174_a.func_147297_a(
-      new C09PacketHeldItemChange(currentSlot)
-    );
+    setCurrentSlot(currentSlot, 1);
 
     Shift.setState(false);
 
@@ -156,14 +116,10 @@ register("Tick", () => {
         ) {
           Shift.setState(false);
 
-          MC.field_71439_g.field_71174_a.func_147297_a(
-            new C09PacketHeldItemChange(getDrillSlot())
-          );
-          Player.setHeldItemIndex(getDrillSlot());
+          setCurrentSlot(getDrillSlot(), 1);
 
           canCheck = false;
           checkTickCounter = 0;
-          playerYBe4 = Player.getY();
 
           setState("armadillo");
         }

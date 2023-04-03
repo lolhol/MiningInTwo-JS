@@ -1,24 +1,17 @@
-/** @format */
+export function fromXYZToHY(block) {
+  let x = block.getX();
+  let y = block.getY();
+  let z = block.getZ();
 
-import { radiansToDegree } from "../MathUtils/radiansToDegree";
-
-let canaotv = false;
-
-export function lookAtBlockTP(x, y, z, ms) {
-  canaotv = false;
-  let hoekPitch;
   let hoekYaw;
   let AngleYaw;
-  let msLookVelo = ms;
 
-  if (x === undefined || y === undefined || z === undefined) {
-    ChatLib.chat(" ");
-  } else {
+  if (x !== undefined || y !== undefined || z !== undefined) {
     let PlayerAngleYaw = Player.getPlayer().field_70177_z;
     PlayerAngleYaw %= 360;
     let dX = Player.getX() - x + 0.000001;
     let dZ = Player.getZ() - z + 0.000001;
-    let dY = Player.getY() - y;
+    let dY = Player.getY() + 1.54 - y;
 
     let dis = Math.sqrt(dX * dX + dZ * dZ);
     if (dX < 0.0 && dZ < 0.0) {
@@ -44,20 +37,8 @@ export function lookAtBlockTP(x, y, z, ms) {
     hoekPitch =
       radiansToDegree(Math.atan(dY / dis)) - Player.getPlayer().field_70125_A;
 
-    new Thread(() => {
-      for (let i = 0; i < msLookVelo; i++) {
-        Player.getPlayer().field_70177_z += hoekYaw / msLookVelo;
-        Player.getPlayer().field_70125_A += hoekPitch / msLookVelo;
-
-        try {
-          Thread.sleep(1);
-        } catch (e) {
-          Player.getPlayer().field_70177_z += hoekYaw / msLookVelo;
-          Player.getPlayer().field_70125_A += hoekPitch / msLookVelo;
-        }
-      }
-    }).start();
+    return [hoekYaw, hoekPitch];
   }
-}
 
-module.export = { canaotv };
+  return null;
+}

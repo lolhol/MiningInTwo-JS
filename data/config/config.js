@@ -205,6 +205,15 @@ class Settings {
     })
     ping = 100;
 
+    @SliderProperty({
+        name: 'kmeffm',
+        description: 'Basically set this to ur ping if its above like 70. OTHERWISE SET THIS TO 10 OR LESS!',
+        category: 'TP-Settings',
+        min: 0,
+        max: 700
+    })
+    nukertype = 0;
+
     @SwitchProperty({
         name: 'Re-Teleport',
         description: 'Also very important if u wana afk dillo macro.',

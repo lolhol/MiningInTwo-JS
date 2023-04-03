@@ -11,7 +11,7 @@ export function lookAtSlowly(x, y, z, speed) {
   let hoekPitch;
   let hoekYaw;
   let AngleYaw;
-  let msLookVelo = speed; //Settings.SPEED * 15;
+  let msLookVelo = speed;
 
   if (Settings.SPEED == 1) {
     msLookVelo = 2;
@@ -50,16 +50,15 @@ export function lookAtSlowly(x, y, z, speed) {
     hoekPitch =
       radiansToDegree(Math.atan(dY / dis)) - Player.getPlayer().field_70125_A;
 
+    let hookYawStep = hoekYaw / msLookVelo + 0.0001;
+    let hookPitchStep = hoekPitch / msLookVelo + 0.0001;
+
     new Thread(() => {
       for (let i = 0; i < msLookVelo; i++) {
-        Player.getPlayer().field_70177_z += hoekYaw / msLookVelo;
-        Player.getPlayer().field_70125_A += hoekPitch / msLookVelo;
+        Player.getPlayer().field_70177_z += hookYawStep;
+        Player.getPlayer().field_70125_A += hookPitchStep;
         Thread.sleep(1);
       }
     }).start();
   }
-}
-
-function setSpeed() {
-  lookSPEED = Settings.SPEED * 0.2;
 }

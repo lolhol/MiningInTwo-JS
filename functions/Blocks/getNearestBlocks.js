@@ -2,6 +2,9 @@
 
 import { setState } from "../Other/state";
 import Settings from "../../data/config/config";
+import { fromXYZToHY } from "../MathUtils/fromBlockToPY";
+import { getDistance } from "../MathUtils/getDistance";
+import { getBlockCoords } from "./blockCoords";
 
 export function getNearestBlocks() {
   let radius = 1;
@@ -50,12 +53,13 @@ export function sendYofBlock(y) {
 }
 
 export function mainBlockChecks() {
+  let blockCoords;
   let checks = false;
   let block;
   let radius = 0;
   let blockReturnList = getNearestBlocks();
   let blockMax = [];
-  let turnBlockList = [];
+  let blockCords;
 
   if (Settings.topToBottom) {
     blockReturnList = blockReturnList.sort((a, b) => {
@@ -97,7 +101,6 @@ export function mainBlockChecks() {
     if (checks == true) {
       for (let k = 0; k < blockReturnList.length; k++) {
         if (blockReturnList[k].getY() + 2 <= Player.getY()) {
-          //ChatLib.chat(blockReturnList[k].getY() + 1.3 + " " + Player.getY());
           blockReturnList.splice(k, 1);
           k--;
         }
@@ -122,7 +125,35 @@ export function mainBlockChecks() {
         blockMax.splice(block);
       }
     }
-    //ChatLib.chat(block.getY());
+
+    if (Settings.macroSpot == 1)
+      blockCoords = getBlockCoords().rDataCoords.custom;
+    else blockCoords = getBlockCoords().rDataCoords.default;
+
+    let pos = getBlockCoordsAtPlayer();
+
+    if (blockCoords.length != 0) {
+      SHIFT.setState(true);
+
+      if (blockCoords.length == pos + 1) {
+        blockCords = blockCoords[0];
+      } else if (blockCoords.length > pos + 1) {
+        blockCords = blockCoords[pos + 1];
+      }
+    }
+
+    blockReturnList.sort((a, b) => {
+      return getDistance(
+        [a.getX(), a.getY(), a.getZ()],
+        [blockCords.x, blockCords.y, blockCords.z]
+      ) >
+        getDistance(
+          [b.getX(), b.getY(), b.getZ()],
+          [blockCords.x, blockCords.y, blockCords.z]
+        )
+        ? 1
+        : -1;
+    });
 
     if (block) {
       return block;

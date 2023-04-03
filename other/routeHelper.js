@@ -11,7 +11,7 @@ let block;
 let pairCount = 0;
 let isWritten = false;
 
-const CYLINDER_RADIUS = 0.7;
+const CYLINDER_RADIUS = 0.5;
 
 register("gameUnload", () => {
   if (routeToggle) {

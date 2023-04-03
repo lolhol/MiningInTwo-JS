@@ -1,7 +1,7 @@
 {
   "name": "MiningInTwo",
   "author": "godbrigero",
-  "description": "Drain Bamage. call me -> | +7 (650) 125 7721 | -> 🥶 😳 🤫 🤥 | Haters, StAy MaD",
+  "description": "Drain Bamage. call me -> +7 (650) 125 7721 <- 🥶 😳 🤫 🤥 | Haters, StAy MaD",
   "entry": "index.js",
   "version": "1.9.0",
   "requires": ["RenderLib", "Vigilance", "Async", "PogData"]

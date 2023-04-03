@@ -13,6 +13,7 @@ import "./other/routeHelper";
 import "./other/structureFinder";
 import "./debug_testing_dont_mind/debug";
 import "./other/renderLinesQOL";
+import "./functions/Blocks/calculateBlocks";
 import "./commandKeyRegistries/commands";
 import "./functions/Other/playerFailsafe";
 import { teleport } from "./teleportToNextBlock";
@@ -25,6 +26,8 @@ import { helperSpinDrive } from "./other/helperMode";
 import { getDrillSlot, getRodSlot } from "./functions/Items/getInvItems";
 import { throwRod } from "./functions/Items/throwRod";
 import { checkBlocksAround } from "./functions/Blocks/checkBlocksAround";
+import { lookAndJump } from "./functions/Looks/lookAndJump";
+import { setCurrentSlot } from "./functions/Other/setCurrentSlot";
 
 export const C09PacketHeldItemChange = Java.type(
   "net.minecraft.network.play.client.C09PacketHeldItemChange"
@@ -40,6 +43,7 @@ let tickDilloCheckCount = 0;
 let checkedNumber = 0;
 let currentBlock;
 let breakBlockCounter = 0;
+let block;
 
 RIGHTCLICK.setAccessible(true);
 
@@ -61,8 +65,6 @@ function onStateSpinDrive() {
     angle = 0;
   }
 
-  let block = mainBlockChecks();
-
   if (block) {
     let y = block.getY() - 0.5;
 
@@ -82,16 +84,12 @@ function onStateSpinDrive() {
       y -= 5;
     }
 
-    //renderToolAngle(angleTudaSuda);
-
     let radians = degreeToRadians(angleTudaSuda);
     let dx = Math.cos(radians) * 5;
     let dz = Math.sin(radians) * 5;
 
     let x = block.getX() + dx + 0.5;
     let z = block.getZ() + dz + 0.5;
-
-    //---
 
     if (
       currentBlock == null ||
@@ -125,17 +123,10 @@ function onStateSpinDrive() {
     } else {
       if (lookUnder) {
         if (block.getY() > Player.getY()) {
-          new Thread(() => {
-            JUMP.setState(true);
-            lookAtSlowly(
-              x + 0.25,
-              block.getY() - 5,
-              z + 0.25,
-              Settings.SPEED * 15
-            );
-            Thread.sleep(10);
-            JUMP.setState(false);
-          }).start();
+          lookAndJump(
+            [x + 0.25, block.getY() - 5, z + 0.25],
+            Settings.SPEED * 15
+          );
         } else {
           lookAtSlowly(
             x + 0.25,
@@ -146,12 +137,7 @@ function onStateSpinDrive() {
         }
       } else {
         if (block.getY() - 0.3 > Player.getY()) {
-          new Thread(() => {
-            JUMP.setState(true);
-            lookAtSlowly(x + 0.25, y, z + 0.25, Settings.SPEED * 15);
-            Thread.sleep(10);
-            JUMP.setState(false);
-          }).start();
+          lookAndJump([x + 0.25, y, z + 0.25], Settings.SPEED * 15);
         }
 
         lookAtSlowly(x + 0.25, y, z + 0.25, Settings.SPEED * 15);
@@ -163,7 +149,6 @@ function onStateSpinDrive() {
 }
 
 export function getBlockFromAngle(angle, dist) {
-  let random = Math.random();
   let playerX = Player.getX();
   let playerZ = Player.getZ();
 
@@ -221,11 +206,9 @@ register("Tick", () => {
         checkedNumber = 0;
         tickDilloCheckCount = 0;
         canCheckIfOnDillo = false;
+        block = mainBlockChecks();
 
-        MC.field_71439_g.field_71174_a.func_147297_a(
-          new C09PacketHeldItemChange(getDrillSlot())
-        );
-        Player.setHeldItemIndex(getDrillSlot());
+        setCurrentSlot(getDrillSlot(), 1);
 
         setState("spinDrive");
       } else {
