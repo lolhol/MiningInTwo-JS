@@ -3,7 +3,7 @@
 	re-teleport = false
 	re-tp_amount_of_times = 2
 	smoothlook = 109
-	ping_mode = 98
+	ping_mode = 1
 	aotv_teleport_time = 95
 	kmeffm = 0
 	aotv_wait_time = 50
@@ -17,6 +17,7 @@
 	clear_command = "clear"
 	render_pathbreak_helper = false
 	linesqol = true
+	nuker_type = 0
 	aotv_teleport_time = 504
 	wait_on_first_point = false
 	"clear_command_(after_editing_do_/ct_load)" = "clear"

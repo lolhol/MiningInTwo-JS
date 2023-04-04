@@ -141,8 +141,16 @@ class Settings {
     SPEED = 5;
 
     @SelectorProperty({
-        name: 'Macro spot',
+        name: 'Nuker Type',
         description: 'Select a default spot to macro... (comming soon)',
+        category: 'Main',
+        options: ["3x3"],
+    })
+    nukerType = 0;
+
+    @SelectorProperty({
+        name: 'Macro spot',
+        description: 'Select a default spot to macro...',
         category: 'Main',
         options: ["Default", "Custom"],
     })
@@ -204,15 +212,6 @@ class Settings {
         max: 700
     })
     ping = 100;
-
-    @SliderProperty({
-        name: 'kmeffm',
-        description: 'Basically set this to ur ping if its above like 70. OTHERWISE SET THIS TO 10 OR LESS!',
-        category: 'TP-Settings',
-        min: 0,
-        max: 700
-    })
-    nukertype = 0;
 
     @SwitchProperty({
         name: 'Re-Teleport',

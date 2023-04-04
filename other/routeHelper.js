@@ -71,6 +71,7 @@ export function getBlocksOnLine(x1, y1, z1, x2, y2, z2) {
       let block = World.getBlockAt(newX, newY, newZ);
 
       let found = false;
+
       for (let j = 0; j < blocks.length; j++) {
         if (
           blocks[j].getX() == block.getX() &&
@@ -148,7 +149,7 @@ export function routeHelper() {
   }
 }
 
-function distanceFromTo(x, y, z, x1, y1, z1) {
+export function distanceFromTo(x, y, z, x1, y1, z1) {
   let dX = x1 - x;
   let dZ = y1 - z;
   let dY = z1 - y;

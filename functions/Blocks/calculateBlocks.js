@@ -1,10 +1,7 @@
-//Deff not borrowed from yefi (fr)
-
-import { sendStart } from "../Other/Packets/sendStart";
-import { sendStop } from "../Other/Packets/sendStop";
 import { getBlockCoords } from "./blockCoords";
 import Settings from "../../data/config/config";
-import { addBlock, renderToolBlock } from "../../debug_testing_dont_mind/debug";
+import { renderToolBlock } from "../../debug_testing_dont_mind/debug";
+import { distanceFromTo } from "../../other/routeHelper";
 
 let MC = Client.getMinecraft();
 
@@ -13,23 +10,17 @@ let C07PacketPlayerDigging = Java.type(
 );
 
 let EnumFacing = Java.type("net.minecraft.util.EnumFacing");
+
 let C0APacketAnimation = Java.type(
   "net.minecraft.network.play.client.C0APacketAnimation"
 );
 
-let mineX = [];
-let mineY = [];
-let mineZ = [];
-var mineNextX = [];
-var mineNextY = [];
-var mineNextZ = [];
+let blockMine = [];
 var publicMinePos = undefined;
-let checkbrokenx = [];
+let brokenBlox = [];
 
 let cansend = false;
 let enabled = false;
-let canshift = false;
-let first = false;
 let routeToggle = false;
 
 let blockCoords;
@@ -38,19 +29,13 @@ let nukerTickCounter = 0;
 
 register("command", (...args) => {
   routeNuker();
-}).setName("rn1");
+}).setName("routenuker");
 
 function routeNuker() {
   if (!routeToggle) {
     routeToggle = !routeToggle;
-    mineX = [];
-    mineY = [];
-    mineZ = [];
+    blockMine = [];
     if (routeToggle) {
-      /*selectedAotvCords();
-      data.aotvBlocksX.push(data.aotvBlocksX[0]);
-      data.aotvBlocksY.push(data.aotvBlocksY[0]);
-      data.aotvBlocksZ.push(data.aotvBlocksZ[0]);*/
       makeArr();
     }
   }
@@ -83,368 +68,139 @@ export function makeArr() {
     blockCoords = getBlockCoords().rDataCoords.custom;
   else blockCoords = getBlockCoords().rDataCoords.default;
 
-  for (var i = 0; i < blockCoords.length - 1; i++) {
+  for (let i = 0; i < blockCoords.length - 1; i++) {
     calcBlocks(
       blockCoords[i].x,
-      blockCoords[i].y,
+      blockCoords[i].y + 1.54,
       blockCoords[i].z,
       blockCoords[i + 1].x,
       blockCoords[i + 1].y,
       blockCoords[i + 1].z
     );
   }
+
+  if (Settings.nukerType == 1) {
+    blockMine.sort((a, b) => {
+      return distanceFromTo(
+        b.getX(),
+        b.getY(),
+        b.getZ(),
+        Player.getX(),
+        Player.getY(),
+        Player.getZ()
+      ) >
+        distanceFromTo(
+          a.getX(),
+          a.getY(),
+          a.getZ(),
+          Player.getX(),
+          Player.getY(),
+          Player.getZ()
+        )
+        ? 1
+        : -1;
+    });
+  }
 }
 
 function calcBlocks(x1, y1, z1, x2, y2, z2) {
-  y1 = y1 + 1;
-  y2 = y2 + 1;
+  if (Settings.nukerType == 0) {
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+    let dz = z2 - z1;
 
-  mineX.push(Math.floor(x1));
-  mineNextX.push(Math.floor(x1));
+    if (Math.abs(dz) < 0.000001) {
+      dz = 0.000001;
+    }
 
-  mineY.push(Math.floor(y1));
-  mineNextY.push(Math.floor(y1));
+    let length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    let stepX = dx / length;
+    let stepY = dy / length;
+    let stepZ = dz / length;
 
-  mineZ.push(Math.floor(z1));
-  mineNextZ.push(Math.floor(z1));
+    for (let i = 0; i < length; i++) {
+      let newX = stepX * i + x1;
+      let newY = stepY * i + y1;
+      let newZ = stepZ * i + z1;
 
-  mineX.push(Math.floor(x1));
-  mineNextX.push(Math.floor(x1));
-
-  mineY.push(Math.floor(y1) + 1);
-  mineNextY.push(Math.floor(y1) + 1);
-
-  mineZ.push(Math.floor(z1));
-  mineNextZ.push(Math.floor(z1));
-
-  mineX.push(Math.floor(x1));
-  mineNextX.push(Math.floor(x1));
-
-  mineY.push(Math.floor(y1) + 2);
-  mineNextY.push(Math.floor(y1) + 2);
-
-  mineZ.push(Math.floor(z1));
-  mineNextZ.push(Math.floor(z1));
-
-  x1 = x1 + 0.5;
-  y1 = y1 + 2.62 - 3 / 32;
-  z1 = z1 + 0.5;
-
-  x2 = x2 + 0.5;
-  y2 = y2 + 0.5;
-  z2 = z2 + 0.5;
-
-  var changeX = (x2 - x1) / 100;
-  var changeY = (y2 - y1) / 100;
-  var changeZ = (z2 - z1) / 100;
-  var curX = x1;
-  var curY = y1;
-  var curZ = z1;
-  var blockX = Math.floor(curX);
-  var blockY = Math.floor(curY);
-  var blockZ = Math.floor(curZ);
-
-  for (var counter = 1; counter <= 100; counter++) {
-    blockX = Math.floor(curX);
-    blockY = Math.floor(curY);
-    blockZ = Math.floor(curZ);
-    curX += changeX;
-    curY += changeY;
-    curZ += changeZ;
-    if (
-      blockX != Math.floor(curX) ||
-      blockY != Math.floor(curY) ||
-      blockZ != Math.floor(curZ)
-    ) {
-      mineX.push(blockX);
-      mineNextX.push(blockX);
-
-      mineY.push(blockY);
-      mineNextY.push(blockY);
-
-      mineZ.push(blockZ);
-      mineNextZ.push(blockZ);
-
-      if (blockX != Math.floor(curX - 0.1)) {
-        mineX.push(blockX - 1);
-        mineNextX.push(blockX - 1);
-        if (Settings.nukertype == 0) {
-          mineX.push(blockX - 1);
-          mineX.push(blockX - 2);
-          mineX.push(blockX - 2);
-          mineNextX.push(blockX - 1);
-          mineNextX.push(blockX - 2);
-          mineNextX.push(blockX - 2);
-        }
-
-        mineY.push(blockY);
-        mineNextY.push(blockY);
-        if (Settings.nukertype == 0) {
-          mineY.push(blockY + 1);
-          mineY.push(blockY);
-          mineY.push(blockY + 1);
-          mineNextY.push(blockY + 1);
-          mineNextY.push(blockY);
-          mineNextY.push(blockY + 1);
-        }
-
-        mineZ.push(blockZ);
-        mineNextZ.push(blockZ);
-        if (Settings.nukertype == 0) {
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
+      for (let m = -1; m <= 1; m++) {
+        for (let k = -1; k <= 1; k++) {
+          for (let j = -1; j <= 1; j++) {
+            let block = World.getBlockAt(newX + m, newY + j, newZ + k);
+            blockMine.push(block);
+          }
         }
       }
+    }
+  } else if (Settings.nukerType == 1) {
+    let CYLINDER_RADIUS = 0.7;
 
-      if (blockX != Math.floor(curX + 0.1)) {
-        mineX.push(blockX + 1);
-        mineNextX.push(blockX + 1);
-        if (Settings.nukertype == 0) {
-          mineX.push(blockX + 1);
-          mineX.push(blockX + 0);
-          mineX.push(blockX + 0);
-          mineNextX.push(blockX + 1);
-          mineNextX.push(blockX + 0);
-          mineNextX.push(blockX + 0);
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+    let dz = z2 - z1;
+
+    if (Math.abs(dz) < 0.000001) {
+      dz = 0.000001;
+    }
+
+    let length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    let stepX = dx / length;
+    let stepY = dy / length;
+    let stepZ = dz / length;
+
+    let planeCoef = x1 * dx + y1 * dy + z1 * dz;
+
+    let xN = 0;
+    let yN = 0;
+    let zN = planeCoef / dz;
+    let dxN = xN - x1;
+    let dyN = yN - y1;
+    let dzN = zN - z1;
+    let lenN = Math.sqrt(dxN * dxN + dyN * dyN + dzN * dzN);
+    dxN = dxN / lenN;
+    dyN = dyN / lenN;
+    dzN = dzN / lenN;
+
+    let dxM = dy * dzN - dz * dyN;
+    let dyM = dz * dxN - dx * dzN;
+    let dzM = dx * dyN - dy * dxN;
+    let cLen = Math.sqrt(dxM * dxM + dyM * dyM + dzM * dzM);
+    dxM = dxM / cLen;
+    dyM = dyM / cLen;
+    dzM = dzM / cLen;
+
+    for (let degree = 0; degree < 360; degree += 20) {
+      let angle = degree * (Math.PI / 180);
+      let dxP = dxN * Math.cos(angle) + dxM * Math.sin(angle);
+      let dyP = dyN * Math.cos(angle) + dyM * Math.sin(angle);
+      let dzP = dzN * Math.cos(angle) + dzM * Math.sin(angle);
+
+      for (let i = 0; i < length; i++) {
+        let newX = stepX * i + x1 + dxP * CYLINDER_RADIUS;
+        let newY = stepY * i + y1 + dyP * CYLINDER_RADIUS;
+        let newZ = stepZ * i + z1 + dzP * CYLINDER_RADIUS;
+
+        let block = World.getBlockAt(newX, newY, newZ);
+
+        let found = false;
+
+        for (let j = 0; j < blockMine.length; j++) {
+          if (
+            blockMine[j].getX() == block.getX() &&
+            blockMine[j].getY() == block.getY() &&
+            blockMine[j].getZ() == block.getZ()
+          ) {
+            found = true;
+          }
         }
 
-        mineY.push(blockY);
-        mineNextY.push(blockY);
-        if (Settings.nukertype == 0) {
-          mineY.push(blockY + 1);
-          mineY.push(blockY);
-          mineY.push(blockY + 1);
-          mineNextY.push(blockY + 1);
-          mineNextY.push(blockY);
-          mineNextY.push(blockY + 1);
+        if (found == false) {
+          blockMine.push(block);
+          blockMine.push(World.getBlockAt(x2, y2 + 2, z2));
         }
-
-        mineZ.push(blockZ);
-        mineNextZ.push(blockZ);
-        if (Settings.nukertype == 0) {
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-        }
-        //console.log('pushed ' + blockZ)
-        //mineZ.push(blockZ)
-        //mineZ.push(blockZ)
-        //mineZ.push(blockZ)
-        //blockposy.push(blockZ)
-      }
-
-      if (blockY != Math.floor(curY - 0.1)) {
-        mineX.push(blockX);
-        mineNextX.push(blockX);
-        if (Settings.nukertype == 0) {
-          mineX.push(blockX);
-          mineX.push(blockX - 1);
-          mineX.push(blockX - 1);
-
-          mineNextX.push(blockX);
-          mineNextX.push(blockX - 1);
-          mineNextX.push(blockX - 1);
-        }
-        //mineX.push(blockX)
-        //mineX.push(blockX - 1)
-        //mineX.push(blockX - 1)
-        //blockposx.push(blockX)
-
-        mineY.push(blockY - 1);
-        mineNextY.push(blockY - 1);
-        if (Settings.nukertype == 0) {
-          mineY.push(blockY - 0);
-          mineY.push(blockY - 1);
-          mineY.push(blockY - 0);
-
-          mineNextY.push(blockY - 0);
-          mineNextY.push(blockY - 1);
-          mineNextY.push(blockY - 0);
-        }
-
-        //mineY.push(blockY - 2)
-        //mineY.push(blockY - 1)
-        //mineY.push(blockY - 2)
-        //blockposy.push(blockY - 1)
-
-        mineZ.push(blockZ);
-        mineNextZ.push(blockZ);
-        if (Settings.nukertype == 0) {
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-        }
-        //console.log('pushed ' + blockZ)
-        //mineZ.push(blockZ)
-        //mineZ.push(blockZ)
-        //mineZ.push(blockZ)
-        //blockposy.push(blockZ)
-      }
-
-      if (blockY != Math.floor(curY + 0.1)) {
-        mineX.push(blockX);
-        mineNextX.push(blockX);
-        if (Settings.nukertype == 0) {
-          mineX.push(blockX);
-          mineX.push(blockX - 1);
-          mineX.push(blockX - 1);
-
-          mineNextX.push(blockX);
-          mineNextX.push(blockX - 1);
-          mineNextX.push(blockX - 1);
-        }
-        //mineX.push(blockX)
-        //mineX.push(blockX - 1)
-        //mineX.push(blockX - 1)
-        //blockposx.push(blockX)
-
-        mineY.push(blockY + 1);
-        mineNextY.push(blockY + 1);
-        if (Settings.nukertype == 0) {
-          mineY.push(blockY + 2);
-          mineY.push(blockY + 1);
-          mineY.push(blockY + 2);
-
-          mineNextY.push(blockY + 2);
-          mineNextY.push(blockY + 1);
-          mineNextY.push(blockY + 2);
-        }
-        //mineY.push(blockY + 0)
-        //mineY.push(blockY + 1)
-        //mineY.push(blockY + 0)
-        //blockposy.push(blockY + 1)
-
-        mineZ.push(blockZ);
-        mineNextZ.push(blockZ);
-        if (Settings.nukertype == 0) {
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-          mineZ.push(blockZ);
-
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-          mineNextZ.push(blockZ);
-        }
-        //console.log('pushed ' + blockZ)
-        //mineZ.push(blockZ)
-        //mineZ.push(blockZ)
-        //mineZ.push(blockZ)
-        //blockposy.push(blockZ)
-      }
-
-      if (blockZ != Math.floor(curZ - 0.1)) {
-        mineX.push(blockX);
-        mineNextX.push(blockX);
-        if (Settings.nukertype == 0) {
-          mineX.push(blockX);
-          mineX.push(blockX - 1);
-          mineX.push(blockX - 1);
-
-          mineNextX.push(blockX);
-          mineNextX.push(blockX - 1);
-          mineNextX.push(blockX - 1);
-        }
-        //mineX.push(blockX)
-        //mineX.push(blockX - 1)
-        //mineX.push(blockX - 1)
-        //blockposx.push(blockX)
-
-        mineY.push(blockY);
-        mineNextY.push(blockY);
-        if (Settings.nukertype == 0) {
-          mineY.push(blockY + 1);
-          mineY.push(blockY);
-          mineY.push(blockY + 1);
-          mineNextY.push(blockY + 1);
-          mineNextY.push(blockY);
-          mineNextY.push(blockY + 1);
-          //mineY.push(blockY - 1)
-          //mineY.push(blockY)
-          //mineY.push(blockY - 1)
-          //blockposy.push(blockY)
-        }
-        mineZ.push(blockZ - 1);
-        mineNextZ.push(blockZ - 1);
-
-        ChatLib.chat(Settings.nukertype);
-        if (Settings.nukertype == 0) {
-          mineZ.push(blockZ - 1);
-          mineZ.push(blockZ - 1);
-          mineZ.push(blockZ - 1);
-          mineNextZ.push(blockZ - 1);
-          mineNextZ.push(blockZ - 1);
-          mineNextZ.push(blockZ - 1);
-        }
-        //console.log('pushed ' + blockZ - 1)
-        //mineZ.push(blockZ - 1)
-        //mineZ.push(blockZ - 1)
-        //mineZ.push(blockZ - 1)
-        //blockposy.push(blockZ - 1)
-      }
-
-      if (blockZ != Math.floor(curZ + 0.1)) {
-        mineX.push(blockX);
-        mineNextX.push(blockX);
-        if (Settings.nukertype == 0) {
-          mineX.push(blockX);
-          mineX.push(blockX - 1);
-          mineX.push(blockX - 1);
-
-          mineNextX.push(blockX);
-          mineNextX.push(blockX - 1);
-          mineNextX.push(blockX - 1);
-        }
-        //mineX.push(blockX)
-        ///mineX.push(blockX - 1)
-        //mineX.push(blockX - 1)
-        //blockposx.push(blockX)
-
-        mineY.push(blockY);
-        mineNextY.push(blockY);
-        if (Settings.nukertype == 0) {
-          mineY.push(blockY + 1);
-          mineY.push(blockY);
-          mineY.push(blockY + 1);
-
-          mineNextY.push(blockY + 1);
-          mineNextY.push(blockY);
-          mineNextY.push(blockY + 1);
-        }
-        //mineY.push(blockY - 1)
-        //mineY.push(blockY)
-        //mineY.push(blockY - 1)
-        //blockposy.push(blockY)
-
-        mineZ.push(blockZ + 1);
-        mineNextZ.push(blockZ + 1);
-        /*if (Settings.nukertype == 0) {
-          mineZ.push(blockZ + 1);
-          mineZ.push(blockZ + 1);
-          mineZ.push(blockZ + 1);
-
-          mineNextZ.push(blockZ + 1);
-          mineNextZ.push(blockZ + 1);
-          mineNextZ.push(blockZ + 1);
-        }*/
       }
     }
   }
-
-  /*for (let m = 0; m < mineX.length; m++) {
-    addBlock(World.getBlockAt(mineX[m], mineY[m], mineZ[m]));
-  }*/
 }
 
 function distanceToPlayerHead(x, y, z) {
@@ -456,137 +212,92 @@ function distanceToPlayerHead(x, y, z) {
   return dis2;
 }
 
-let checkbrokeny = [];
-let checkbrokenz = [];
+let send = true;
+let currentBlock;
+
+export function shiftList() {
+  return blockMine.shift();
+}
 
 register("Tick", () => {
   if (!World.isLoaded) return;
   if (enabled == true) {
-    canshift = true;
+    if (nukerTickCounter >= 5) {
+      try {
+        currentBlock = blockMine[0];
+        let currentBlockPos = new net.minecraft.util.BlockPos(
+          currentBlock.getX(),
+          currentBlock.getY(),
+          currentBlock.getZ()
+        );
 
-    if (first == true && cansend == true) {
-      cansend = false;
+        let stringVers = World.getBlockAt(
+          currentBlock.getX(),
+          currentBlock.getY(),
+          currentBlock.getZ()
+        );
 
-      MC.field_71439_g.field_71174_a.func_147297_a(
-        new C07PacketPlayerDigging(
-          C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
-          publicMinePos,
-          EnumFacing.func_176733_a(
-            Client.getMinecraft().field_71439_g.field_70177_z
-          )
-        )
-      );
+        renderToolBlock(
+          currentBlock.getX(),
+          currentBlock.getY(),
+          currentBlock.getZ()
+        );
 
-      if (canshift) {
-        if (Player.getY() == Math.floor(Player.getY())) {
-          canshift = false;
-          checkbrokenx.push(mineX[0]);
-          checkbrokeny.push(mineY[0]);
-          checkbrokenz.push(mineZ[0]);
-          /*mineX.splice(6, 0, mineX[0]);
-            mineY.splice(6, 0, mineY[0]);
-            mineZ.splice(6, 0, mineZ[0]);*/
-          mineX.shift();
-          mineY.shift();
-          mineZ.shift();
-        }
-      }
-    }
-
-    if (Player.getHeldItem() != null) {
-      //ChatLib.chat(mineX[0] + " " + mineY[0] + " " + mineZ[0]);
-      if (
-        distanceToPlayerHead(mineX[0], mineY[0], mineZ[0]) < 4 /*&&
-        ChatLib.removeFormatting(
-          Player.getHeldItem().getLore()[4].toString()
-        ).includes("Mining Speed")*/
-      ) {
-        if (mineX.length > 0) {
-          publicMinePos = new net.minecraft.util.BlockPos(
-            mineX[0],
-            mineY[0],
-            mineZ[0]
-          );
-
-          renderToolBlock(mineX[0], mineY[0], mineZ[0]);
-
-          if (publicMinePos != undefined) {
-            if (
-              !World.getBlockAt(mineX[0], mineY[0], mineZ[0])
-                .toString()
-                .includes("air") ||
-              !World.getBlockAt(mineX[0], mineY[0], mineZ[0])
-                .toString()
-                .includes("cobble")
-            ) {
-              /*sendStart(
-                publicMinePos,
-                EnumFacing.func_176733_a(
-                  Client.getMinecraft().field_71439_g.field_70177_z
-                )
-              );*/
+        if (
+          !stringVers.toString().includes("air") &&
+          !stringVers.toString().includes("cobblestone") &&
+          !stringVers.toString().includes("glass")
+        ) {
+          if (
+            distanceToPlayerHead(
+              currentBlock.getX(),
+              currentBlock.getY(),
+              currentBlock.getZ()
+            ) < 4
+          ) {
+            if (send) {
+              send = false;
 
               MC.field_71439_g.field_71174_a.func_147297_a(
                 new C07PacketPlayerDigging(
-                  C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
-                  publicMinePos,
+                  C07PacketPlayerDigging.Action.STOP_DESTROY_BLOCK,
+                  currentBlockPos,
                   EnumFacing.func_176733_a(
                     Client.getMinecraft().field_71439_g.field_70177_z
                   )
                 )
               );
 
-              MC.field_71439_g.field_71174_a.func_147297_a(
-                new C0APacketAnimation()
-              );
-              MC.field_71439_g.func_71038_i();
-
-              nukerTickCounter = 0;
-
-              first = true;
-              cansend = true;
-            } else {
-              if (canshift) {
-                canshift = false;
-
-                checkbrokenx.push(mineX[0]);
-                checkbrokeny.push(mineY[0]);
-                checkbrokenz.push(mineZ[0]);
-
-                mineX.splice(6, 0, mineX[0]);
-                mineY.splice(6, 0, mineY[0]);
-                mineZ.splice(6, 0, mineZ[0]);
-                mineX.shift();
-                mineY.shift();
-                mineZ.shift();
-              }
-
-              nukerTickCounter = 0;
+              //currentBlock = shiftList();
+              brokenBlox.push(currentBlock);
             }
+
+            MC.field_71439_g.field_71174_a.func_147297_a(
+              new C07PacketPlayerDigging(
+                C07PacketPlayerDigging.Action.START_DESTROY_BLOCK,
+                currentBlockPos,
+                EnumFacing.func_176733_a(
+                  Client.getMinecraft().field_71439_g.field_70177_z
+                )
+              )
+            );
+
+            MC.field_71439_g.field_71174_a.func_147297_a(
+              new C0APacketAnimation()
+            );
+            MC.field_71439_g.func_71038_i();
+
+            send = true;
           }
+        } else {
+          currentBlock = shiftList();
         }
+      } catch (e) {
+        ChatLib.chat(e.toString());
+        enabled = false;
       }
     }
-  }
 
-  if (checkbrokenx[0] != undefined) {
-    if (
-      World.getBlockAt(checkbrokenx[0], checkbrokeny[0], checkbrokenz[0])
-        .toString()
-        .includes("air")
-    ) {
-      checkbrokenx.shift();
-      checkbrokeny.shift();
-      checkbrokenz.shift();
-    } else {
-      mineX.push(checkbrokenx[0]);
-      mineY.push(checkbrokeny[0]);
-      mineZ.push(checkbrokenz[0]);
-      checkbrokenx.shift();
-      checkbrokeny.shift();
-      checkbrokenz.shift();
-    }
+    nukerTickCounter++;
   }
-
-  nukerTickCounter++;
 });
