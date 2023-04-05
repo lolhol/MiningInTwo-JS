@@ -4,7 +4,7 @@ import { setState } from "../Other/state";
 import Settings from "../../data/config/config";
 import { fromXYZToHY } from "../MathUtils/fromBlockToPY";
 import { getDistance } from "../MathUtils/getDistance";
-import { getBlockCoords } from "./blockCoords";
+import { getBlockCoords, getBlockCoordsAtPlayer } from "./blockCoords";
 
 export function getNearestBlocks() {
   let radius = 1;
@@ -130,30 +130,28 @@ export function mainBlockChecks() {
       blockCoords = getBlockCoords().rDataCoords.custom;
     else blockCoords = getBlockCoords().rDataCoords.default;
 
-    let pos = getBlockCoordsAtPlayer();
-
     if (blockCoords.length != 0) {
-      SHIFT.setState(true);
+      let pos = getBlockCoordsAtPlayer();
 
       if (blockCoords.length == pos + 1) {
         blockCords = blockCoords[0];
       } else if (blockCoords.length > pos + 1) {
         blockCords = blockCoords[pos + 1];
       }
-    }
 
-    blockReturnList.sort((a, b) => {
-      return getDistance(
-        [a.getX(), a.getY(), a.getZ()],
-        [blockCords.x, blockCords.y, blockCords.z]
-      ) >
-        getDistance(
-          [b.getX(), b.getY(), b.getZ()],
+      blockReturnList.sort((a, b) => {
+        return getDistance(
+          [a.getX(), a.getY(), a.getZ()],
           [blockCords.x, blockCords.y, blockCords.z]
-        )
-        ? 1
-        : -1;
-    });
+        ) >
+          getDistance(
+            [b.getX(), b.getY(), b.getZ()],
+            [blockCords.x, blockCords.y, blockCords.z]
+          )
+          ? 1
+          : -1;
+      });
+    }
 
     if (block) {
       return block;

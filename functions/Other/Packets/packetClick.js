@@ -4,8 +4,10 @@ export const C08PacketPlayerBlockPlacement = Java.type(
 
 export const BP = Java.type("net.minecraft.util.BlockPos");
 
+let MC = Client.getMinecraft();
+
 export function packetClick(slot) {
-  mc.field_71439_g.field_71174_a.func_147297_a(
+  MC.field_71439_g.field_71174_a.func_147297_a(
     new C08PacketPlayerBlockPlacement(
       new BP(-1, -1, -1),
       255,
