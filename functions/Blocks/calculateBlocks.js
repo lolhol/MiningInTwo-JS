@@ -723,7 +723,7 @@ register("Tick", () => {
                   currentBlock.getX(),
                   currentBlock.getY(),
                   currentBlock.getZ()
-                ) < 100
+                ) < 5
               ) {
                 if (send) {
                   send = false;
