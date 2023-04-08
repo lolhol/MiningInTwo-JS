@@ -6,8 +6,19 @@ import Settings from "../../data/config/config";
 import RenderLib from "../../../RenderLib/index";
 
 let renderPoints = [];
+let renderBlock = false;
+let renderBlockPos;
 let render = false;
 let posESP;
+
+export function renderOneBlock(block) {
+  renderBlockPos = block;
+  renderBlock = true;
+}
+
+export function stopRenderBlock() {
+  renderBlock = false;
+}
 
 register("renderworld", () => {
   if (!World.isLoaded) return;
@@ -27,6 +38,23 @@ register("renderworld", () => {
         true
       );
     }
+  }
+
+  if (renderBlock) {
+    try {
+      RenderLib.drawEspBox(
+        renderBlockPos.getX() - 0.5,
+        renderBlockPos.getY(),
+        renderBlockPos.getZ() - 0.5,
+        1,
+        1,
+        1,
+        0.4,
+        0.4,
+        1,
+        true
+      );
+    } catch (e) {}
   }
 });
 

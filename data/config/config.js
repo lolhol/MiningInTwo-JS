@@ -141,10 +141,10 @@ class Settings {
     SPEED = 5;
 
     @SelectorProperty({
-        name: 'Nuker Type',
-        description: 'Select a default spot to macro... (comming soon)',
+        name: 'Nuker block detection system',
+        description: 'Selet a block detection system (YEFIS ONE SUCKS! U HAVE TO CHECK IF U CAN AOTV AND IF U CANT, BREAK BLOCKS MANUALLY!!)',
         category: 'Main',
-        options: ["3x3"],
+        options: ["3x3", "yefi's", "my own (slowish)"],
     })
     nukerType = 0;
 

@@ -77,7 +77,7 @@ function lookAtNextBlockSlow() {
     if (block) {
       lookAtSlowly(block[0], block[1], block[2], Settings.smoothLook);
 
-      Thread.sleep(Settings.smoothLook + Settings.AOTVdelay);
+      Thread.sleep(Settings.AOTVdelay);
 
       nextBlock();
     } else {
