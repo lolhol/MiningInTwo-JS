@@ -28,8 +28,57 @@ import {
 import RenderLib from "../../RenderLib";
 import { lookAtSlowly } from "../functions/Looks/lookAtSlowly";
 import { adjustLook } from "../functions/MathUtils/adjustLook";
+import { checkNuker, routeNuker } from "../functions/Blocks/calculateBlocks";
+import { turnOnCheck } from "../other/checkRoute";
 
 const MC = Client.getMinecraft();
+
+let prefix = "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]";
+
+register("command", (...args) => {
+  routeNuker();
+}).setName("routenuker");
+
+register("command", (...args) => {
+  checkNuker();
+}).setName("checknuker");
+
+register("command", (...args) => {
+  if (args[0] == null) {
+    ChatLib.chat("&l---------------------------------------");
+    ChatLib.chat("&l         Mining In Two help ");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l  To open menu, run /mit or /MiningInTwo");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l  To see help for route nuker, run /helpnuker");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l  To help with the dillo setup run /setuphelp");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l  To help with the macro settings run /helpsetting");
+
+    ChatLib.chat("&l         Mining In Two help ");
+    ChatLib.chat("&l---------------------------------------");
+  } else if (args[0] == "helpnuker") {
+    ChatLib.chat("&l---------------------------------------");
+    ChatLib.chat("&l         Mining In Two help ");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l Asked questions...");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l  1) ");
+
+    ChatLib.chat(" ");
+    ChatLib.chat("&l  To turn on nuker run /routenuker");
+
+    ChatLib.chat("&l         Mining In Two help ");
+    ChatLib.chat("&l---------------------------------------");
+  }
+}).setName("mithelp");
 
 register("command", (...args) => {
   if (writeCobbleCoords() != false) {
@@ -38,22 +87,17 @@ register("command", (...args) => {
       addBlock();
 
       ChatLib.chat("&l---------------------------------------");
-      ChatLib.chat(
-        "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" + " &lBlock Set!"
-      );
+      ChatLib.chat(prefix + " &lBlock Set!");
       ChatLib.chat("&l---------------------------------------");
     } else {
       ChatLib.chat("&l---------------------------------------");
-      ChatLib.chat(
-        "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" +
-          " &lTurn on custom route in settings RN!!!"
-      );
+      ChatLib.chat(prefix + " &lTurn on custom route in settings RN!!!");
       ChatLib.chat("&l---------------------------------------");
     }
   } else {
     ChatLib.chat("&l---------------------------------------");
     ChatLib.chat(
-      "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" +
+      prefix +
         " &lCould not find cobble block under vein! Place it and run /block again!"
     );
     ChatLib.chat("&l---------------------------------------");
@@ -63,18 +107,13 @@ register("command", (...args) => {
 register("command", (...args) => {
   if (Settings.macroSpot == 1) {
     ChatLib.chat("&l---------------------------------------");
-    ChatLib.chat(
-      "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" + " &lRoute Cleared!"
-    );
+    ChatLib.chat(prefix + " &lRoute Cleared!");
     ChatLib.chat("&l---------------------------------------");
 
     clearBlockCoords();
   } else {
     ChatLib.chat("&l---------------------------------------");
-    ChatLib.chat(
-      "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" +
-        " &lCan't clear default route..."
-    );
+    ChatLib.chat(prefix + " &lCan't clear default route...");
     ChatLib.chat("&l---------------------------------------");
   }
 }).setName(Settings.clearCommand);
@@ -98,6 +137,10 @@ register("command", (...args) => {
 }).setName("mit");
 
 register("command", (...args) => {
+  turnOnCheck();
+}).setName("checkRoute");
+
+register("command", (...args) => {
   Settings.openGUI();
 }).setName("MiningInTwo");
 
@@ -113,32 +156,23 @@ register("command", (...args) => {
     if (checkIfCobbleUnder() != false) {
       if (replaceBlockCoord(args[0] - 1) == null) {
         ChatLib.chat("&l---------------------------------------------");
-        ChatLib.chat(
-          "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" +
-            " Could not replace block :<"
-        );
+        ChatLib.chat(prefix + " Could not replace block :<");
         ChatLib.chat("&l---------------------------------------------");
       } else {
         ChatLib.chat("&l---------------------------------------------");
-        ChatLib.chat(
-          "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" + " Block replaced!"
-        );
+        ChatLib.chat(prefix + " Block replaced!");
         ChatLib.chat("&l---------------------------------------------");
       }
     } else {
       ChatLib.chat("&l---------------------------------------------");
       ChatLib.chat(
-        "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" +
-          " NO cobble under u found! place it and run again!!"
+        prefix + " NO cobble under u found! place it and run again!!"
       );
       ChatLib.chat("&l---------------------------------------------");
     }
   } else {
     ChatLib.chat("&l---------------------------------------------");
-    ChatLib.chat(
-      "&l[&4&lMi&e&lni&2&lng &d&lIn &5&lTw&b&lo&f&l]" +
-        " Could not replace block!"
-    );
+    ChatLib.chat(prefix + " Could not replace block!");
     ChatLib.chat("&l---------------------------------------------");
   }
 }).setName(Settings.replaceBlock);

@@ -142,9 +142,9 @@ class Settings {
 
     @SelectorProperty({
         name: 'Nuker block detection system',
-        description: 'Selet a block detection system (YEFIS ONE SUCKS! U HAVE TO CHECK IF U CAN AOTV AND IF U CANT, BREAK BLOCKS MANUALLY!!)',
+        description: 'Selet a block detection system',
         category: 'Main',
-        options: ["3x3", "yefi's", "my own (slowish)"],
+        options: ["3x3", "cylinder"],
     })
     nukerType = 0;
 
@@ -162,6 +162,13 @@ class Settings {
         category: 'Main',
     })
     render = false;
+
+    @SwitchProperty({
+        name: 'Check route blocks',
+        description: 'Checks all blocks on route to see if it is in structure or if its not.',
+        category: 'Main',
+    })
+    checkRoute = false;
 
     @TextProperty({
         name: 'Clear command (after editing do /ct load)',

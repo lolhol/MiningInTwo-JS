@@ -16,6 +16,7 @@ import "./other/renderLinesQOL";
 import "./functions/Blocks/calculateBlocks";
 import "./commandKeyRegistries/commands";
 import "./functions/Other/playerFailsafe";
+import "./other/checkRoute";
 import { teleport } from "./teleportToNextBlock";
 import { getState, setState } from "./functions/Other/state";
 

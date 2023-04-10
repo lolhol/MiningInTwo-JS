@@ -6,8 +6,8 @@
 	ping_mode = 1
 	aotv_teleport_time = 95
 	kmeffm = 0
-	aotv_wait_time = 50
-	"look_time_(in_ms)" = 94
+	aotv_wait_time = 549
+	"look_time_(in_ms)" = 156
 
 [main]
 	top-to-bottom = true
@@ -24,11 +24,12 @@
 	menu_keybind = true
 	structure_finder = false
 	add_block_to_list_keybind = true
+	check_route_blocks = true
 	smoothlook = 5
 	nuker_block_detection_system = 1
 	rotation_angle = 210
 	wait_on_first_point_wait_time = 11154
-	macro_spot = 1
+	macro_spot = 0
 
 [helper-mode]
 	turn_on_helper = true
